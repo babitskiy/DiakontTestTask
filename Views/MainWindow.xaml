@@ -11,7 +11,7 @@
 
             <TabItem Name="PositionsTab">
                 <TabItem.Header>
-                    <TextBlock Text="Должности"/>
+                    <TextBlock Text="Штатное расписание"/>
                 </TabItem.Header>
 
                 <Grid>
@@ -19,8 +19,15 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="0.4*"/>
                     </Grid.ColumnDefinitions>
-                    <ListView Grid.Column="0" x:Name="ViewAllPositions" Height="Auto">
-
+                    <ListView Grid.Column="0" x:Name="ViewAllStaffingTableElements" Height="Auto" ItemsSource="{Binding AllStaffingTableElements}" >
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Отдел" DisplayMemberBinding="{Binding Path=StaffingTableElementDepartment.Name}" />
+                                <GridViewColumn Header="Должность" DisplayMemberBinding="{Binding Path=StaffingTableElementPosition.Name}" />
+                                <GridViewColumn Header="Дата начала действия" DisplayMemberBinding="{Binding Path=StartDate, StringFormat={}{0:dd.MM.yyyy}}" />
+                                <GridViewColumn Header="Количество" DisplayMemberBinding="{Binding Path=EmployeesCount}" />
+                            </GridView>
+                        </ListView.View>
                     </ListView>
                     <StackPanel Grid.Column="1" VerticalAlignment="Top" >
                         <TextBlock Text="Подразделение" Margin="5" Padding="0 5 0 0" />
@@ -47,14 +54,22 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="0.4*"/>
                     </Grid.ColumnDefinitions>
-                    <ListView Grid.Column="0" x:Name="ViewAllRates" Height="Auto">
-
+                    <ListView Grid.Column="0" x:Name="ViewAllRates" Height="Auto" ItemsSource="{Binding AllRates}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Должность" DisplayMemberBinding="{Binding Path=RatePosition.Name}" />
+                                <GridViewColumn Header="Дата начала действия" DisplayMemberBinding="{Binding Path=StartDate, StringFormat={}{0:dd.MM.yyyy}}" />
+                                <GridViewColumn Header="Ставка" DisplayMemberBinding="{Binding Path=Salary}" />
+                            </GridView>
+                        </ListView.View>
                     </ListView>
                     <StackPanel Grid.Column="1" VerticalAlignment="Top" >
                         <TextBlock Text="Должность" Margin="5" Padding="0 5 0 0" />
                         <ComboBox Margin="5" Padding="10" />
                         <TextBlock Text="Дата начала действия ставки" Margin="5" Padding="0 5 0 0" />
                         <DatePicker Margin="5" Padding="10" />
+                        <TextBlock Text="Ставка" Margin="5" Padding="0 5 0 0" />
+                        <TextBox Margin="5" Padding="10" />
                         <Button DockPanel.Dock="Bottom" Content="Добавить" Margin="5" Padding="10" />
                     </StackPanel>
                 </Grid>
