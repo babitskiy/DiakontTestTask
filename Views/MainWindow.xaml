@@ -1,0 +1,88 @@
+﻿<Window x:Class="DiakontTestTask.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DiakontTestTask"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <TabControl>
+
+            <TabItem Name="PositionsTab">
+                <TabItem.Header>
+                    <TextBlock Text="Должности"/>
+                </TabItem.Header>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.4*"/>
+                    </Grid.ColumnDefinitions>
+                    <ListView Grid.Column="0" x:Name="ViewAllPositions" Height="Auto">
+
+                    </ListView>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Top" >
+                        <TextBlock Text="Подразделение" Margin="5" Padding="0 5 0 0" />
+                        <ComboBox Margin="5" Padding="10" />
+                        <TextBlock Text="Должность" Margin="5" Padding="0 5 0 0" />
+                        <ComboBox Margin="5" Padding="10" />
+                        <TextBlock Text="Количество должностей" Margin="5" Padding="0 5 0 0" />
+                        <TextBox Margin="5" Padding="10" />
+                        <TextBlock Text="Дата начала действия должности" Margin="5" Padding="0 5 0 0" />
+                        <DatePicker  Margin="5" Padding="10" />
+                        <Button DockPanel.Dock="Bottom" Content="Добавить" Margin="5" Padding="10" />
+                    </StackPanel>
+                </Grid>
+
+            </TabItem>
+
+            <TabItem Name="RatesTab">
+                <TabItem.Header>
+                    <TextBlock Text="Ставки" />
+                </TabItem.Header>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.4*"/>
+                    </Grid.ColumnDefinitions>
+                    <ListView Grid.Column="0" x:Name="ViewAllRates" Height="Auto">
+
+                    </ListView>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Top" >
+                        <TextBlock Text="Должность" Margin="5" Padding="0 5 0 0" />
+                        <ComboBox Margin="5" Padding="10" />
+                        <TextBlock Text="Дата начала действия ставки" Margin="5" Padding="0 5 0 0" />
+                        <DatePicker Margin="5" Padding="10" />
+                        <Button DockPanel.Dock="Bottom" Content="Добавить" Margin="5" Padding="10" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Name="ReportTab">
+                <TabItem.Header>
+                    <TextBlock Text="Отчёт" />
+                </TabItem.Header>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.4*"/>
+                    </Grid.ColumnDefinitions>
+                    <ListView Grid.Column="0" x:Name="Report" Height="Auto">
+
+                    </ListView>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Top" >
+                        <TextBlock Text="Дата с" Margin="5" Padding="0 5 0 0" />
+                        <DatePicker Margin="5" Padding="10" />
+                        <TextBlock Text="Дата по" Margin="5" Padding="0 5 0 0" />
+                        <DatePicker Margin="5" Padding="10" />
+                        <Button DockPanel.Dock="Bottom" Content="Сформировать отчёт" Margin="5" Padding="10" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+    </Grid>
+</Window>
