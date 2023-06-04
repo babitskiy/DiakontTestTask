@@ -3,9 +3,7 @@ using DiakontTestTask.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Windows;
-using System.Windows.Documents;
 
 namespace DiakontTestTask.ViewModels
 {
@@ -59,15 +57,41 @@ namespace DiakontTestTask.ViewModels
             }
         }
 
+        #region REPORT
+        // свойства элемента штатного расписания
+        public Department ReportDepartment { get; set; }
+        public DateTime ReportStartDate { get; set; }
+        public DateTime ReportEndDate { get; set; }
+        public List<ReportElement> ReportElements { get; set; }
+
+        // команда генерации отчёта
+        private RelayCommand createReport;
+        public RelayCommand CreateReport
+        {
+            get
+            {
+                return createReport ?? new RelayCommand(obj =>
+                {
+                    ReportElements = DataWorker.CreateReport(ReportStartDate, ReportEndDate);
+                    string resultStr = "Отчёт сформирован " + ReportStartDate.ToString() + " " + ReportEndDate.ToString();
+                    UpdateAllDataView();
+                    MainWindow.ReportView.ItemsSource = ReportElements;
+                    MainWindow.ReportView.Items.Refresh();
+
+                    ShowMessageToUser(resultStr);
+                });
+            }
+        }
+        #endregion
 
         #region COMMANDS TO ADD
         // свойства элемента штатного расписания
         public DateTime StaffingTableElementStartDate { get; set; }
         public int StaffingTableElementEmployeesCount { get; set; }
-        public virtual Position StaffingTableElementPosition { get; set; }
-        public virtual Department StaffingTableElementDepartment { get; set; }
+        public Position StaffingTableElementPosition { get; set; }
+        public Department StaffingTableElementDepartment { get; set; }
 
-        // метод добавления элемента штатного расписания
+        // команда добавления элемента штатного расписания
         private RelayCommand addStaffingTableElement;
         public RelayCommand AddStaffingTableElement
         {

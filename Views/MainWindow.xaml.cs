@@ -11,6 +11,7 @@ namespace DiakontTestTask
     {
         public static ListView AllRatesView;
         public static ListView AllStaffingTableElementsView;
+        public static ListView ReportView;
 
         public MainWindow()
         {
@@ -19,6 +20,7 @@ namespace DiakontTestTask
 
             AllStaffingTableElementsView = ViewAllStaffingTableElements;
             AllRatesView = ViewAllRates;
+            ReportView = ViewReport;
         }
     }
 }

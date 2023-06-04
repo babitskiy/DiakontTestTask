@@ -1,7 +1,10 @@
 ﻿using DiakontTestTask.Models.Data;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace DiakontTestTask.Models
 {
@@ -33,6 +36,15 @@ namespace DiakontTestTask.Models
             using (ApplicationContext db = new ApplicationContext())
             {
                 return db.Rates.ToList();
+            }
+        }
+
+        // получить все элементы штатного расписания
+        public static List<StaffingTableElement> GetAllStaffingTableElements()
+        {
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                return db.StaffingTableElements.ToList();
             }
         }
 
@@ -69,14 +81,40 @@ namespace DiakontTestTask.Models
             }
         }
 
-
-        // получить все элементы штатного расписания
-        public static List<StaffingTableElement> GetAllStaffingTableElements()
+        // создание отчёта
+        public static List<ReportElement> CreateReport(DateTime startDate, DateTime endDate)
         {
+            string sql = @"select 
+	                        s.department, 
+	                        s.position,
+	                        r.startDate, 
+	                        s.startDate, 
+	                        r.salary * s.employee_count 
+                        from dbo.Rates r
+	                        join dbo.StaffingTableElements s on r.position = s.position AND r.startDate = s.startDate
+                        where r.startDate >= '01.01.2015' and r.startDate <= '01.07.2015'";
             using (ApplicationContext db = new ApplicationContext())
             {
-                return db.StaffingTableElements.ToList();
+                var rep = db.StaffingTableElements.Join(db.Rates,
+                    s => s.PositionId,
+                    r => r.PositionId,
+                    (s, r) => new
+                    {
+                        tempDepartment = s.Department,
+                        tempPosition = s.PositionId,
+                        tempStartDate = s.StartDate,
+                        tempOveralSalary = r.Salary * s.EmployeesCount
+                    });
             }
+            return new List<ReportElement> { 
+                new ReportElement
+                {
+                    StartDate = startDate,
+                    EndDate = endDate,
+                    DepartmentId = 1,
+                    FOT = 100500
+                }
+            };
         }
 
         // получение должности по id должности

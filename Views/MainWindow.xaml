@@ -86,15 +86,22 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="0.4*"/>
                     </Grid.ColumnDefinitions>
-                    <ListView Grid.Column="0" x:Name="Report" Height="Auto">
-
+                    <ListView Grid.Column="0" x:Name="ViewReport" Height="Auto" ItemsSource="{Binding ReportElements}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Отдел" DisplayMemberBinding="{Binding Path=DepartmentId}"/>
+                                <GridViewColumn Header="Дата с" DisplayMemberBinding="{Binding Path=StartDate, StringFormat={}{0:dd.MM.yyyy}}"/>
+                                <GridViewColumn Header="Дата по" DisplayMemberBinding="{Binding Path=EndDate, StringFormat={}{0:dd.MM.yyyy}}"/>
+                                <GridViewColumn Header="ФОТ отдела в месяц" DisplayMemberBinding="{Binding Path=FOT}"/>
+                            </GridView>
+                        </ListView.View>
                     </ListView>
                     <StackPanel Grid.Column="1" VerticalAlignment="Top" >
                         <TextBlock Text="Дата с" Margin="5" Padding="0 5 0 0" />
-                        <DatePicker Margin="5" Padding="10" />
+                        <DatePicker Margin="5" Padding="10" SelectedDate="{Binding ReportStartDate}"/>
                         <TextBlock Text="Дата по" Margin="5" Padding="0 5 0 0" />
-                        <DatePicker Margin="5" Padding="10" />
-                        <Button DockPanel.Dock="Bottom" Content="Построить отчёт" Margin="5" Padding="10" />
+                        <DatePicker Margin="5" Padding="10" SelectedDate="{Binding ReportEndDate}"/>
+                        <Button Content="Построить отчёт" Margin="5" Padding="10" Command="{Binding CreateReport}" CommandParameter="{Binding MainWnd}"/>
                     </StackPanel>
                 </Grid>
             </TabItem>
