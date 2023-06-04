@@ -58,7 +58,7 @@ namespace DiakontTestTask.ViewModels
         }
 
         #region REPORT
-        // свойства элемента штатного расписания
+        // свойства элемента отчёта
         public Department ReportDepartment { get; set; }
         public DateTime ReportStartDate { get; set; }
         public DateTime ReportEndDate { get; set; }

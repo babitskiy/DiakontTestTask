@@ -95,18 +95,31 @@ namespace DiakontTestTask.Models
                         where r.startDate >= '01.01.2015' and r.startDate <= '01.07.2015'";
             using (ApplicationContext db = new ApplicationContext())
             {
-                var rep = db.StaffingTableElements.Join(db.Rates,
-                    s => s.PositionId,
-                    r => r.PositionId,
+                var repEls = db.StaffingTableElements.Join(db.Rates,
+                    s => new { s.PositionId, s.StartDate },
+                    r => new { r.PositionId, r.StartDate },
                     (s, r) => new
                     {
-                        tempDepartment = s.Department,
+                        tempDepartmentId = s.DepartmentId,
                         tempPosition = s.PositionId,
                         tempStartDate = s.StartDate,
                         tempOveralSalary = r.Salary * s.EmployeesCount
                     });
+
+                var result = new List<ReportElement>();
+
+                foreach (var repEl in repEls)
+                {
+                    result.Add(new ReportElement
+                    {
+                        DepartmentId = repEl.tempDepartmentId,
+                        StartDate = repEl.tempStartDate,
+                        FOT = repEl.tempOveralSalary
+                    });
+                }
+                return result;
             }
-            return new List<ReportElement> { 
+            /*return new List<ReportElement> { 
                 new ReportElement
                 {
                     StartDate = startDate,
@@ -114,7 +127,7 @@ namespace DiakontTestTask.Models
                     DepartmentId = 1,
                     FOT = 100500
                 }
-            };
+            };*/
         }
 
         // получение должности по id должности

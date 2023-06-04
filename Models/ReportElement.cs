@@ -5,7 +5,6 @@ namespace DiakontTestTask.Models
 {
     public class ReportElement
     {
-        public int Id { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal FOT { get; set; }

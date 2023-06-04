@@ -89,10 +89,10 @@
                     <ListView Grid.Column="0" x:Name="ViewReport" Height="Auto" ItemsSource="{Binding ReportElements}">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Отдел" DisplayMemberBinding="{Binding Path=DepartmentId}"/>
+                                <GridViewColumn Header="Отдел" DisplayMemberBinding="{Binding Path=ReportElementDepartment.Name}"/>
                                 <GridViewColumn Header="Дата с" DisplayMemberBinding="{Binding Path=StartDate, StringFormat={}{0:dd.MM.yyyy}}"/>
                                 <GridViewColumn Header="Дата по" DisplayMemberBinding="{Binding Path=EndDate, StringFormat={}{0:dd.MM.yyyy}}"/>
-                                <GridViewColumn Header="ФОТ отдела в месяц" DisplayMemberBinding="{Binding Path=FOT}"/>
+                                <GridViewColumn Header="ФОТ отдела в месяц" DisplayMemberBinding="{Binding Path=FOT, StringFormat='0.00'}"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
