@@ -39,7 +39,7 @@
                         <TextBox Margin="5" Padding="10" Text="{Binding StaffingTableElementEmployeesCount}" />
                         <TextBlock Text="Дата начала действия должности" Margin="5" Padding="0 5 0 0" />
                         <DatePicker  Margin="5" Padding="10" SelectedDate="{Binding StaffingTableElementStartDate}" />
-                        <Button Content="Добавить" Margin="5" Padding="10" Command="{Binding AddStaffingTableElement}" CommandParameter="{Binding MainWnd}" />
+                        <Button Content="Добавить" Margin="5" Padding="10" Command="{Binding AddStaffingTableElement}" />
                     </StackPanel>
                 </Grid>
 
@@ -71,7 +71,7 @@
                         <DatePicker Margin="5" Padding="10" SelectedDate="{Binding RateStartDate}"/>
                         <TextBlock Text="Ставка" Margin="5" Padding="0 5 0 0" />
                         <TextBox Margin="5" Padding="10" Text="{Binding RateSalary}"/>
-                        <Button Content="Добавить" Margin="5" Padding="10" Command="{Binding AddNewRate}" CommandParameter="{Binding MainWnd}"/>
+                        <Button Content="Добавить" Margin="5" Padding="10" Command="{Binding AddNewRate}" />
                     </StackPanel>
                 </Grid>
             </TabItem>
@@ -101,7 +101,7 @@
                         <DatePicker Margin="5" Padding="10" SelectedDate="{Binding ReportStartDate}"/>
                         <TextBlock Text="Дата по" Margin="5" Padding="0 5 0 0" />
                         <DatePicker Margin="5" Padding="10" SelectedDate="{Binding ReportEndDate}"/>
-                        <Button Content="Построить отчёт" Margin="5" Padding="10" Command="{Binding CreateReport}" CommandParameter="{Binding MainWnd}"/>
+                        <Button Content="Построить отчёт" Margin="5" Padding="10" Command="{Binding CreateReport}" />
                     </StackPanel>
                 </Grid>
             </TabItem>

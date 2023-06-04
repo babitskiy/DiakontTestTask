@@ -84,15 +84,6 @@ namespace DiakontTestTask.Models
         // создание отчёта
         public static List<ReportElement> CreateReport(DateTime startDate, DateTime endDate)
         {
-            string sql = @"select 
-	                        s.department, 
-	                        s.position,
-	                        r.startDate, 
-	                        s.startDate, 
-	                        r.salary * s.employee_count 
-                        from dbo.Rates r
-	                        join dbo.StaffingTableElements s on r.position = s.position AND r.startDate = s.startDate
-                        where r.startDate >= '01.01.2015' and r.startDate <= '01.07.2015'";
             using (ApplicationContext db = new ApplicationContext())
             {
                 var repEls = db.StaffingTableElements.Join(db.Rates,
@@ -114,6 +105,66 @@ namespace DiakontTestTask.Models
                     {
                         DepartmentId = repEl.tempDepartmentId,
                         StartDate = repEl.tempStartDate,
+                        FOT = repEl.tempOveralSalary
+                    });
+                }
+                return result;
+            }
+            /*return new List<ReportElement> { 
+                new ReportElement
+                {
+                    StartDate = startDate,
+                    EndDate = endDate,
+                    DepartmentId = 1,
+                    FOT = 100500
+                }
+            };*/
+        }
+        public static List<ReportElement> CreateReport2(DateTime startDate, DateTime endDate)
+        {
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                var Rates = db.Rates.ToList();
+
+                // why it doesnt work?????
+                /*foreach (var rate in Rates)
+                {
+                    rate.EndDate = Rates
+                        .Where(e => e.StartDate > rate.StartDate && e.Position == rate.Position)?
+                        .Min(e => e.StartDate) ?? DateTime.MaxValue;
+                }*/
+
+                // добавляем в список позиций даты окончания позиций (у действующих позиций будет Now)
+                foreach (var rate in Rates)
+                {
+                    rate.EndDate = Rates
+                        .Where(e => e.StartDate > rate.StartDate && e.Position == rate.Position)
+                        .DefaultIfEmpty( new Rate { StartDate = DateTime.Now })
+                        .Min(e => e.StartDate);
+                }
+
+                // создаём перечень элементов объединённой таблицы
+                var repEls = db.StaffingTableElements.Join(db.Rates,
+                    s => new { s.PositionId, s.StartDate },
+                    r => new { r.PositionId, r.StartDate },
+                    (s, r) => new
+                    {
+                        Id = s.Id,
+                        tempDepartmentId = s.DepartmentId,
+                        tempPosition = s.PositionId,
+                        tempStartDate = s.StartDate,
+                        tempOveralSalary = r.Salary * s.EmployeesCount
+                    });
+
+                var result = new List<ReportElement>();
+
+                foreach (var repEl in repEls)
+                {
+                    result.Add(new ReportElement
+                    {
+                        DepartmentId = repEl.tempDepartmentId,
+                        StartDate = repEl.tempStartDate,
+                        EndDate = Rates.First(e => e.Id == repEl.Id).EndDate,
                         FOT = repEl.tempOveralSalary
                     });
                 }
