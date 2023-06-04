@@ -32,14 +32,14 @@
                     </ListView>
                     <StackPanel Grid.Column="1" VerticalAlignment="Top" >
                         <TextBlock Text="Подразделение" Margin="5" Padding="0 5 0 0" />
-                        <ComboBox Margin="5" Padding="10" ItemsSource="{Binding AllDepartments}" DisplayMemberPath="Name"/>
+                        <ComboBox Margin="5" Padding="10" ItemsSource="{Binding AllDepartments}" DisplayMemberPath="Name" SelectedItem="{Binding StaffingTableElementDepartment}"/>
                         <TextBlock Text="Должность" Margin="5" Padding="0 5 0 0" />
-                        <ComboBox Margin="5" Padding="10" ItemsSource="{Binding AllPositions}" DisplayMemberPath="Name"/>
+                        <ComboBox Margin="5" Padding="10" ItemsSource="{Binding AllPositions}" DisplayMemberPath="Name" SelectedItem="{Binding StaffingTableElementPosition}"/>
                         <TextBlock Text="Количество должностей" Margin="5" Padding="0 5 0 0" />
-                        <TextBox Margin="5" Padding="10" />
+                        <TextBox Margin="5" Padding="10" Text="{Binding StaffingTableElementEmployeesCount}" />
                         <TextBlock Text="Дата начала действия должности" Margin="5" Padding="0 5 0 0" />
-                        <DatePicker  Margin="5" Padding="10" />
-                        <Button Content="Добавить" Margin="5" Padding="10" />
+                        <DatePicker  Margin="5" Padding="10" SelectedDate="{Binding StaffingTableElementStartDate}" />
+                        <Button Content="Добавить" Margin="5" Padding="10" Command="{Binding AddStaffingTableElement}" CommandParameter="{Binding MainWnd}" />
                     </StackPanel>
                 </Grid>
 

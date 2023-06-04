@@ -3,6 +3,7 @@ using DiakontTestTask.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Windows;
 using System.Windows.Documents;
 
@@ -60,7 +61,32 @@ namespace DiakontTestTask.ViewModels
 
 
         #region COMMANDS TO ADD
-        // свойства 
+        // свойства элемента штатного расписания
+        public DateTime StaffingTableElementStartDate { get; set; }
+        public int StaffingTableElementEmployeesCount { get; set; }
+        public virtual Position StaffingTableElementPosition { get; set; }
+        public virtual Department StaffingTableElementDepartment { get; set; }
+
+        // метод добавления элемента штатного расписания
+        private RelayCommand addStaffingTableElement;
+        public RelayCommand AddStaffingTableElement
+        {
+            get
+            {
+                return addStaffingTableElement ?? new RelayCommand(obj =>
+                {
+                    DataWorker.CreateStaffingTableElement(
+                        StaffingTableElementStartDate,
+                        StaffingTableElementEmployeesCount,
+                        StaffingTableElementPosition,
+                        StaffingTableElementDepartment );
+                    string resultStr = "Элемент таблицы штатного расписания добавлен";
+                    UpdateAllDataView();
+
+                    ShowMessageToUser(resultStr);
+                });
+            }
+        }
 
         // свойства ставки
         public DateTime RateStartDate { get; set; }
