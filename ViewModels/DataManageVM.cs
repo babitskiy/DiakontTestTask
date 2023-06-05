@@ -59,7 +59,6 @@ namespace DiakontTestTask.ViewModels
 
         #region REPORT
         // свойства элемента отчёта
-        public Department ReportDepartment { get; set; }
         public DateTime ReportStartDate { get; set; }
         public DateTime ReportEndDate { get; set; }
         public List<ReportElement> ReportElements { get; set; }
@@ -74,7 +73,7 @@ namespace DiakontTestTask.ViewModels
                 {
                     ReportElements = DataWorker.CreateReport(ReportStartDate, ReportEndDate);
                     string resultStr = "Отчёт сформирован";
-                    UpdateAllDataView();
+
                     MainWindow.ReportView.ItemsSource = ReportElements;
                     MainWindow.ReportView.Items.Refresh();
 

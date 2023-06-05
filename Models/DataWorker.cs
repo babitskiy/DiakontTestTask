@@ -1,10 +1,7 @@
 ﻿using DiakontTestTask.Models.Data;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace DiakontTestTask.Models
 {
@@ -81,42 +78,34 @@ namespace DiakontTestTask.Models
             }
         }
 
-        // создание отчёта
-        /*public static List<ReportElement> CreateReportOld(DateTime startDate, DateTime endDate)
+        // метод создания отчёта
+        public static List<ReportElement> CreateReport(DateTime startDate, DateTime endDate)
         {
             using (ApplicationContext db = new ApplicationContext())
             {
                 var rates = db.Rates.ToList();
                 var staffingTableElements = db.StaffingTableElements.ToList();
 
-                // why it doesnt work?????
-                *//*foreach (var rate in Rates)
-                {
-                    rate.EndDate = Rates
-                        .Where(e => e.StartDate > rate.StartDate && e.Position == rate.Position)?
-                        .Min(e => e.StartDate) ?? DateTime.MaxValue;
-                }*//*
-
-                // добавляем в список позиций даты окончания позиций (у действующих позиций будет Now)
+                // добавляем в список позиций даты окончания позиций (у действующих позиций будет Today)
                 foreach (var rate in rates)
                 {
                     rate.EndDate = rates
-                        .Where(e => e.StartDate > rate.StartDate && e.Position == rate.Position)
-                        .DefaultIfEmpty(new Rate { StartDate = DateTime.Now })
+                        .Where(e => e.StartDate > rate.StartDate && e.PositionId == rate.PositionId)
+                        .DefaultIfEmpty(new Rate { StartDate = DateTime.Today })
                         .Min(e => e.StartDate);
                 }
 
-                // добавляем в список штатного расписания даты окончания позиций (у действующих позиций будет Now)
+                // добавляем в список штатного расписания даты окончания позиций (у действующих позиций будет Today)
                 foreach (var staffingTableElement in staffingTableElements)
                 {
                     staffingTableElement.EndDate = staffingTableElements
-                        .Where(e => e.StartDate > staffingTableElement.StartDate && e.Position == staffingTableElement.Position)
-                        .DefaultIfEmpty(new StaffingTableElement { StartDate = DateTime.Now })
+                        .Where(e => e.StartDate > staffingTableElement.StartDate && e.PositionId == staffingTableElement.PositionId)
+                        .DefaultIfEmpty(new StaffingTableElement { StartDate = DateTime.Today })
                         .Min(e => e.StartDate);
                 }
 
                 // создаём перечень элементов объединённой таблицы
-                var repEls = db.StaffingTableElements.Join(db.Rates,
+                var reportElements = staffingTableElements.Join(rates,
                     s => new { s.PositionId, s.StartDate },
                     r => new { r.PositionId, r.StartDate },
                     (s, r) => new
@@ -128,73 +117,32 @@ namespace DiakontTestTask.Models
                         tempOveralSalary = r.Salary * s.EmployeesCount
                     });
 
-                var result = new List<ReportElement>();
-
-                foreach (var repEl in repEls)
+                // заполняем список reportData
+                var reportData = new List<ReportElement>();
+                foreach (var reportElement in reportElements)
                 {
-                    result.Add(new ReportElement
+                    reportData.Add(new ReportElement
                     {
-                        DepartmentId = repEl.tempDepartmentId,
-                        StartDate = repEl.tempStartDate,
-                        EndDate = rates.First(e => e.Id == repEl.Id).EndDate,
-                        FOT = repEl.tempOveralSalary
+                        DepartmentId = reportElement.tempDepartmentId,
+                        StartDate = reportElement.tempStartDate,
+                        EndDate = rates.First(e => e.Id == reportElement.Id).EndDate,
+                        FOT = reportElement.tempOveralSalary
                     });
                 }
-                return result;
-            }
-        }*/
 
-        public static List<ReportElement> CreateReport(DateTime startDate, DateTime endDate)
-        {
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                // очищаем таблицу ReportElements
-                db.Database.ExecuteSqlRaw("TRUNCATE TABLE ReportElements");
-
-                // заполняем в таблице Rates столбец EndDate
-                db.Database.ExecuteSqlRaw("UPDATE Rates SET EndDate = ( SELECT MIN(StartDate) FROM Rates as s WHERE s.StartDate > Rates.StartDate AND s.PositionId = Rates.PositionId)");
-
-                // заменяем null в поле EndDate на текущую дату
-                db.Database.ExecuteSqlRaw("UPDATE Rates SET EndDate = GETDATE() WHERE EndDate IS NULL");
-
-                // заполняем в таблице StaffingTableElements столбец EndDate
-                db.Database.ExecuteSqlRaw("UPDATE StaffingTableElements SET EndDate = ( SELECT MIN(StartDate) FROM StaffingTableElements as s WHERE s.StartDate > StaffingTableElements.StartDate AND s.PositionId = StaffingTableElements.PositionId)");
-
-                // заменяем null в поле EndDate на текущую дату в таблице staffingTableElements
-                db.Database.ExecuteSqlRaw("UPDATE StaffingTableElements SET EndDate = GETDATE() WHERE EndDate IS NULL");
-
-                //var tempResult = db.Rates.FromSqlRaw("SELECT s.DepartmentId, r.StartDate, r.EndDate, SUM(r.Salary * s.EmployeesCount) AS OveralSalary FROM Rates r JOIN StaffingTableElements s ON r.PositionId = s.PositionId AND r.StartDate >= s.StartDate AND r.EndDate <= s.EndDate GROUP BY s.DepartmentId, r.StartDate, r.EndDate ORDER BY s.DepartmentId, r.StartDate, r.EndDate").ToList();
-
-                var rates = db.Rates.ToList();
-                var staffingTableElements = db.StaffingTableElements.ToList();
-
-                /*var query = (from r in rates
-                             join s in staffingTableElements on new { r.PositionId, r.StartDate, r.EndDate } equals new { s.PositionId, s.StartDate, s.EndDate }
-                             group new { s.DepartmentId, r.StartDate, r.EndDate, r.Salary, s.EmployeesCount } by new { s.DepartmentId, r.StartDate, r.EndDate } into g
-                             select new
-                             {
-                                 g.Key.DepartmentId,
-                                 g.Key.StartDate,
-                                 g.Key.EndDate,
-                                 TotalSalary = g.Sum(x => x.Salary * x.EmployeesCount)
-                             }).OrderBy(x => x.DepartmentId).ThenBy(x => x.StartDate).ThenBy(x => x.EndDate);*/
-
-                db.Database.ExecuteSqlRaw("INSERT INTO ReportElements (DepartmentId, StartDate, EndDate, FOT) SELECT s.DepartmentId, r.StartDate, r.EndDate, SUM(r.Salary * s.EmployeesCount) AS OveralSalary FROM Rates r JOIN StaffingTableElements s ON r.PositionId = s.PositionId AND r.StartDate >= s.StartDate AND r.EndDate <= s.EndDate GROUP BY s.DepartmentId, r.StartDate, r.EndDate ORDER BY s.DepartmentId, r.StartDate, r.EndDate");
-
-                var report = db.ReportElements.ToList();
-
-                List<ReportElement> filteredReport = report
-                    .Where(e => e.StartDate <= endDate && e.EndDate >= startDate) // элемент попадает в период
-                    .Select(e => new ReportElement // создаем новый объект расходов
+                // усекаем список элементов отчёта введёнными через интерфейс датами
+                List<ReportElement> filteredreportData = reportData
+                    .Where(e => e.StartDate <= endDate && e.EndDate >= startDate)
+                    .Select(e => new ReportElement
                     {
                         DepartmentId = e.DepartmentId,
-                        StartDate = e.StartDate < startDate ? startDate : e.StartDate, // если дата начала расходов раньше заданной даты начала периода, то берем заданную дату начала периода
-                        EndDate = e.EndDate > endDate ? endDate : e.EndDate, // если дата окончания расходов позже заданной даты окончания периода, то берем заданную дату окончания периода
+                        StartDate = e.StartDate < startDate ? startDate : e.StartDate,
+                        EndDate = e.EndDate > endDate ? endDate : e.EndDate,
                         FOT = e.FOT
                     })
-                    .ToList();
+                    .ToList(); 
 
-                return filteredReport;
+                return filteredreportData;
             }
         }
 

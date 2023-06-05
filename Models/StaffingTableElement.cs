@@ -11,6 +11,7 @@ namespace DiakontTestTask.Models
     {
         public int Id { get; set; }
         public DateTime StartDate { get; set; }
+        [NotMapped]
         public DateTime? EndDate { get; set; }
         public int EmployeesCount { get; set; }
         public int PositionId { get; set; }
