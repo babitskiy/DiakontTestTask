@@ -9,6 +9,7 @@ namespace DiakontTestTask.Models.Data
         public DbSet<Position> Positions { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<StaffingTableElement> StaffingTableElements { get; set; }
+        public DbSet<ReportElement> ReportElements { get; set; }
 
         public ApplicationContext()
         {
