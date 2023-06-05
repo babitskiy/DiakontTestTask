@@ -72,7 +72,7 @@ namespace DiakontTestTask.ViewModels
             {
                 return createReport ?? new RelayCommand(obj =>
                 {
-                    ReportElements = DataWorker.CreateReport2(ReportStartDate, ReportEndDate);
+                    ReportElements = DataWorker.CreateReport(ReportStartDate, ReportEndDate);
                     string resultStr = "Отчёт сформирован";
                     UpdateAllDataView();
                     MainWindow.ReportView.ItemsSource = ReportElements;

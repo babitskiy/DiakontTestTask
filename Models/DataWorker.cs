@@ -181,11 +181,20 @@ namespace DiakontTestTask.Models
 
                 db.Database.ExecuteSqlRaw("INSERT INTO ReportElements (DepartmentId, StartDate, EndDate, FOT) SELECT s.DepartmentId, r.StartDate, r.EndDate, SUM(r.Salary * s.EmployeesCount) AS OveralSalary FROM Rates r JOIN StaffingTableElements s ON r.PositionId = s.PositionId AND r.StartDate >= s.StartDate AND r.EndDate <= s.EndDate GROUP BY s.DepartmentId, r.StartDate, r.EndDate ORDER BY s.DepartmentId, r.StartDate, r.EndDate");
 
-                var result = db.ReportElements.ToList();
+                var report = db.ReportElements.ToList();
 
+                List<ReportElement> filteredReport = report
+                    .Where(e => e.StartDate <= endDate && e.EndDate >= startDate) // элемент попадает в период
+                    .Select(e => new ReportElement // создаем новый объект расходов
+                    {
+                        DepartmentId = e.DepartmentId,
+                        StartDate = e.StartDate < startDate ? startDate : e.StartDate, // если дата начала расходов раньше заданной даты начала периода, то берем заданную дату начала периода
+                        EndDate = e.EndDate > endDate ? endDate : e.EndDate, // если дата окончания расходов позже заданной даты окончания периода, то берем заданную дату окончания периода
+                        FOT = e.FOT
+                    })
+                    .ToList();
 
-
-                return result;
+                return filteredReport;
             }
         }
 
